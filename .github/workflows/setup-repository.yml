@@ -2,8 +2,7 @@ name: Setup Assignment Repository
 
 on:
   create:
-    branches:
-      - main  # Runs only when the repository is created on main
+    
 
 permissions:
   contents: write  # Allows modifying repository contents
