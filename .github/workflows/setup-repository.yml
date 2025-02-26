@@ -1,9 +1,9 @@
 name: Setup Assignment Repository
 
 on:
-  push:
+  create:
     branches:
-      - main  # Runs when a new repository is initialized
+      - main  # Runs only when the repository is created on main
 
 permissions:
   contents: write  # Allows modifying repository contents
@@ -18,7 +18,15 @@ jobs:
       with:
         fetch-depth: 1  # Fetch only the latest commit to check its author
 
-    - name: Check If Commit is from GitHub Classroom Bot
+    - name: Check If Setup Was Already Completed
+      id: check-tag
+      run: |
+        if git ls-remote --tags origin | grep -q "setup-complete"; then
+          echo "Setup has already been completed. Exiting."
+          exit 0
+        fi
+
+    - name: Check If Repository Was Created by GitHub Classroom Bot
       id: check-bot
       run: |
         AUTHOR_NAME=$(git log -1 --pretty=format:'%an')
