@@ -45,7 +45,8 @@ jobs:
     - name: Create Feature Branches and Introduce Conflicts
       run: |
         git checkout main
-
+        git pull
+        
         git checkout -b feature-a
         echo "Feature A - Line 1" > feature.txt
         echo "Feature A - Line 2" >> feature.txt
