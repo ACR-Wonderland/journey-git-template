@@ -16,17 +16,25 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 1  # Get only the latest commit to check its author
+        fetch-depth: 1  # Fetch only the latest commit to check its author
 
     - name: Check If Commit is from GitHub Classroom Bot
+      id: check-bot
       run: |
         AUTHOR_NAME=$(git log -1 --pretty=format:'%an')
         echo "Latest commit made by: $AUTHOR_NAME"
-        
-        if [[ "$AUTHOR_NAME" != "github-classroom[bot]" ]]; then
-          echo "❌ Not the initial commit by GitHub Classroom Bot. Skipping setup."
-          exit 0
+
+        if [[ "$AUTHOR_NAME" == "GitHub Classroom[bot]" ]]; then
+          echo "BOT_COMMIT=true" >> $GITHUB_ENV
+        else
+          echo "BOT_COMMIT=false" >> $GITHUB_ENV
         fi
+
+    - name: Stop Execution If Not GitHub Classroom Bot
+      if: env.BOT_COMMIT == 'false'
+      run: |
+        echo "❌ Not a commit from GitHub Classroom Bot. Skipping setup."
+        exit 1  # Forces the workflow to stop execution
 
     - name: Configure Git with Actions Token
       run: |
@@ -88,3 +96,10 @@ jobs:
         git add secrets.env temp_files/*
         git commit -m "Oops, added sensitive and temporary files"
         git push origin main
+
+    - name: Mark Setup as Complete
+      run: |
+        git checkout main
+        git commit --allow-empty -m "Setup completed"
+        git tag setup-complete
+        git push origin setup-complete
