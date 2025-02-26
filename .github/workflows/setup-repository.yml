@@ -24,7 +24,7 @@ jobs:
         AUTHOR_NAME=$(git log -1 --pretty=format:'%an')
         echo "Latest commit made by: $AUTHOR_NAME"
 
-        if [[ "$AUTHOR_NAME" == "GitHub Classroom[bot]" ]]; then
+        if [[ "$AUTHOR_NAME" == "github-classroom[bot]" ]]; then
           echo "BOT_COMMIT=true" >> $GITHUB_ENV
         else
           echo "BOT_COMMIT=false" >> $GITHUB_ENV
